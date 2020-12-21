@@ -139,7 +139,8 @@
     "https://cdn.discordapp.com/attachments/724663329548926986/790042598500728832/Screenshot_20201219-220650_TikTok.jpg",
     "https://cdn.discordapp.com/attachments/724663329548926986/790042598815039498/Screenshot_20201219-215705_TikTok.jpg",
     "https://cdn.discordapp.com/attachments/724663329548926986/790042599414562836/Screenshot_20201219-215453_TikTok.jpg",
-    "https://cdn.discordapp.com/attachments/724663329548926986/790164822124920852/Screenshot_20201220-113225_Microsoft_Launcher.jpg"
+    "https://cdn.discordapp.com/attachments/724663329548926986/790164822124920852/Screenshot_20201220-113225_Microsoft_Launcher.jpg",
+    "https://cdn.discordapp.com/attachments/789299319517216798/790557581927776307/Screenshot_20201221-133306_TikTok.jpg"
   ],
   "filip": [
     "https://cdn.discordapp.com/attachments/724663329548926986/725665418131406858/unknown.png",
@@ -213,9 +214,12 @@
     "https://youtu.be/La77uNvdseE?t=18"
   ],
   "changelog": [
-    "1.0.3\nList bugfix \n\n1.0.2\nSupport für attachments. Alle attachments werden jetzt einzeln geadded\n\n1.0.1:\n*heaven list <key|page>\n*heaven delete <key> <index>\n*heaven edit <key> <index> <message>"
+    "1.0.3\nList command bugfix \n\n1.0.2\nSupport für attachments. Alle attachments werden jetzt einzeln geadded\n\n1.0.1:\n*heaven list <key|page>\n*heaven delete <key> <index>\n*heaven edit <key> <index> <message>"
   ],
   "rtx": [
     "https://cdn.discordapp.com/attachments/789299319517216798/790367319309287454/Screenshot_20201211-152356_FahrAPP.jpg"
+  ],
+  "hack": [
+    "javascript:console.log(document.designMode = document.designMode === 'on' ? 'off' : 'on')"
   ]
 }

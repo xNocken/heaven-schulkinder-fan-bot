@@ -14,7 +14,7 @@ const getMessages = () => JSON.parse(fs.readFileSync('data.json'));
  * @param {Function} reply 
  */
 const listMessages = (args, reply) => {
-  const page = parseInt(args[0] || 1)
+  const page = parseInt(args[0] || 1) - 1
   const pages = [];
   const messages = getMessages();
   let string = '';
