@@ -213,7 +213,7 @@
     "https://youtu.be/La77uNvdseE?t=18"
   ],
   "changelog": [
-    "1.0.2\nSupport für attachments. Alle attachments werden jetzt einzeln geadded\n\n1.0.1:\n*heaven list <key|page>\n*heaven delete <key> <index>\n*heaven edit <key> <index> <message>"
+    "1.0.3\nList bugfix \n\n1.0.2\nSupport für attachments. Alle attachments werden jetzt einzeln geadded\n\n1.0.1:\n*heaven list <key|page>\n*heaven delete <key> <index>\n*heaven edit <key> <index> <message>"
   ],
   "rtx": [
     "https://cdn.discordapp.com/attachments/789299319517216798/790367319309287454/Screenshot_20201211-152356_FahrAPP.jpg"

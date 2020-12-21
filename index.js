@@ -19,7 +19,7 @@ const listMessages = (args, reply) => {
   const messages = getMessages();
   let string = '';
 
-  const generatePage = ([name, words], index, arr) => {
+  const generatePage = ([name, words]) => {
     let currentKey = `${ name }:\n`;
 
     words.forEach((word, index) => {
@@ -28,7 +28,7 @@ const listMessages = (args, reply) => {
 
     currentKey += '\n';
 
-    if (string.length + currentKey.length > 2000) {
+    if (string.length && string.length + currentKey.length > 2000) {
       pages.push(string);
       string = '';
     }
@@ -38,7 +38,7 @@ const listMessages = (args, reply) => {
 
   if (isNaN(page)) {
     if (messages[args[0]]) {
-      generatePage([args[0], messages[args[0]]], 0, [1])
+      generatePage([args[0], messages[args[0]]])
     } else {
       reply(`Jimmy ist unterwegs um "${ args[0] }" zu finden aber bis jetzt hat er nur seine Guitarre und das Meer.`)
       return;
