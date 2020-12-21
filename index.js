@@ -4,7 +4,7 @@ const fs = require('fs');
 let lastZitat = {};
 
 const discord = new Discord({
-  token: 'Nzg4ODIxMTk3NTM3NTQyMTk3.X9pE_Q.5waDEzo_N27Xf2oBXrsr1-e7wy0',
+  token: require('./token'),
 });
 
 const getMessages = () => JSON.parse(fs.readFileSync('data.json'));
