@@ -52,6 +52,18 @@ const listMessages = (args, reply) => {
   reply(pages[page || 0] || 'Jimmy konnte diese Seite nicht finden.');
 };
 
+
+/**
+ * 
+ * @param {Array<String>} _ 
+ * @param {Function} reply
+ * @param {Array<mixed>} ___
+ * @param {Message} message
+ */
+const ping = (_, reply, ___, message) => {
+  reply(new Date().getTime() - message.time.getTime() + 'ms')
+};
+
 /**
  * 
  * @param {Array<String>} args 
@@ -77,7 +89,12 @@ const addMessage = (args, reply, attachments) => {
 
   fs.writeFileSync('data.json', JSON.stringify(messages, null, 2))
 
-  reply('Danke dir. Jimmy Braun wird sich freuen.')
+  if (attachments.length) {
+    reply(`Danke dir. Jimmy Braun wird sich über ${attachments.length - 1 ? 'die' : 'das'} ${attachments.length - 1 ? attachments.length + ' ' : ''}Bild${attachments.length - 1 ? 'er' : ''} freuen.`)
+  } else {
+    reply('Danke dir. Jimmy Braun wird sich freuen.')
+  }
+
 };
 
 /**
@@ -131,6 +148,7 @@ const commands = {
   add: addMessage,
   edit: editMessage,
   delete: deleteMessage,
+  ping,
 }
 
 /**
@@ -150,7 +168,7 @@ discord.onmessage = (message, reply) => {
     const command = args.shift();
 
     if (commands[command]) {
-      commands[command](args, reply, attachments);
+      commands[command](args, reply, attachments, message);
     } else {
       reply('Es tut mir Leid aber Jimmy Braun hat diesen Befehl noch nicht hinzugefügt.')
     }
