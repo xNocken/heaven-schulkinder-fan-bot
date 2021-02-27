@@ -1,7 +1,7 @@
 const Discord = require('discord-module');
 const Message = require('discord-module/classes/Message');
 const fs = require('fs');
-let lastZitat = {};
+let lastQuote = {};
 
 const discord = new Discord({
   token: require('./token'),
@@ -14,7 +14,7 @@ const getMessages = () => JSON.parse(fs.readFileSync('data.json'));
  * @param {Function} reply 
  */
 const listMessages = (args, reply) => {
-  const page = parseInt(args[0] || 1) - 1
+  const page = parseInt(args[0] || 1) - 1;
   const pages = [];
   const messages = getMessages();
   let string = '';
@@ -24,7 +24,7 @@ const listMessages = (args, reply) => {
 
     words.forEach((word, index) => {
       currentKey += `  [${ index + 1 }] - ${ word.split(' ').map((a) => a.match(/https:\/\//) ? `<${ a }>` : a).join(' ') }\n`;
-    })
+    });
 
     currentKey += '\n';
 
@@ -38,9 +38,9 @@ const listMessages = (args, reply) => {
 
   if (isNaN(page)) {
     if (messages[args[0]]) {
-      generatePage([args[0], messages[args[0]]])
+      generatePage([args[0], messages[args[0]]]);
     } else {
-      reply(`Jimmy ist unterwegs um "${ args[0] }" zu finden aber bis jetzt hat er nur seine Guitarre und das Meer.`)
+      reply(`Jimmy ist unterwegs um "${args[0]}" zu finden, aber bis jetzt hat er nur seine Guitarre und das Meer.`);
       return;
     }
   } else {
@@ -61,7 +61,7 @@ const listMessages = (args, reply) => {
  * @param {Message} message
  */
 const ping = (_, reply, ___, message) => {
-  reply(new Date().getTime() - message.time.getTime() + 'ms')
+  reply(new Date().getTime() - message.time.getTime() + 'ms');
 };
 
 /**
@@ -92,13 +92,18 @@ const addMessage = (args, reply, attachments) => {
     });
   }
 
-  fs.writeFileSync('data.json', JSON.stringify(messages, null, 2))
+  fs.writeFileSync('data.json', JSON.stringify(messages, null, 2));
 
   if (attachments.length) {
-    reply(`Danke dir. Jimmy Braun wird sich über ${attachments.length - 1 ? 'die' : 'das'} ${attachments.length - 1 ? attachments.length + ' ' : ''}Bild${attachments.length - 1 ? 'er' : ''} freuen.`)
+    if (attachments.length - 1) {
+      reply(`Danke dir. Jimmy Braun wird sich über die ${attachments.length} Bilder freuen.`);
+    } else {
+      reply(`Danke dir. Jimmy Braun wird sich über das Bild freuen.`);
+    }
   } else {
-    reply('Danke dir. Jimmy Braun wird sich freuen.')
+    reply('Danke dir. Jimmy Braun wird sich freuen.');
   }
+
 };
 
 /**
@@ -119,12 +124,12 @@ const editMessage = (args, reply) => {
   if (messages[word]) {
     messages[word][index] = args.join(' ');
   } else {
-    reply(`Jimmy sucht schon sehr lange nach "${ word }" aber hat es bis jetzt nicht finden können.`);
+    reply(`Jimmy sucht schon sehr lange nach "${word}", aber hat es bis jetzt noch nicht finden können.`);
     return;
   }
 
-  fs.writeFileSync('data.json', JSON.stringify(messages, null, 2))
-  reply('Ich werde Jimmy direkt informieren.')
+  fs.writeFileSync('data.json', JSON.stringify(messages, null, 2));
+  reply('Ich werde Jimmy direkt informieren.');
 };
 
 /**
@@ -145,7 +150,7 @@ const deleteMessage = (args, reply) => {
   if (messages[word]) {
     messages[word].splice(index, 1);
   } else {
-    reply('Nichtmal Jimmy kann etwas löschen was nicht existiert.');
+    reply('Nichtmal Jimmy kann etwas löschen, was nicht existiert.');
     return;
   }
 
@@ -153,8 +158,8 @@ const deleteMessage = (args, reply) => {
     delete messages[word];
   }
 
-  fs.writeFileSync('data.json', JSON.stringify(messages, null, 2))
-  reply('Das war Jimmy schon die ganze Zeit ein Dorn im Auge.')
+  fs.writeFileSync('data.json', JSON.stringify(messages, null, 2));
+  reply('Das war Jimmy schon die ganze Zeit ein Dorn im Auge.');
 };
 
 const commands = {
@@ -163,7 +168,7 @@ const commands = {
   edit: editMessage,
   delete: deleteMessage,
   ping,
-}
+};
 
 /**
  * @param {Message} message
@@ -177,22 +182,22 @@ discord.onmessage = (message, reply) => {
   }
 
   if (content.startsWith('*heaven')) {
-    const args = content.split(' ');
+    const args = content.split(/\s/gm);
     delete args.shift();
     const command = args.shift();
 
     if (commands[command]) {
       commands[command](args, reply, attachments, message);
     } else {
-      reply('Es tut mir Leid aber Jimmy Braun hat diesen Befehl noch nicht hinzugefügt.')
+      reply('Es tut mir Leid, aber Jimmy Braun hat diesen Befehl noch nicht hinzugefügt.');
     }
   } else {
     const messages = getMessages();
     let answered = false;
 
-    content.split(' ').map((a) => a.toLowerCase()).forEach((word) => {      
+    content.split(/\s/gm).map((a) => a.toLowerCase()).forEach((word) => {
       Object.entries(messages).forEach(([name, value]) => {
-        if(answered) {
+        if (answered) {
           return;
         }
 
@@ -203,9 +208,9 @@ discord.onmessage = (message, reply) => {
           do {
             number = Math.floor(Math.random() * value.length);
             tries++;
-          } while (number === lastZitat[word] && tries < 100);
+          } while (number === lastQuote[word] && tries < 100);
 
-          lastZitat[word] = number;
+          lastQuote[word] = number;
 
           reply(value[number])
           answered = true;
