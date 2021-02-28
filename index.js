@@ -195,6 +195,10 @@ discord.onmessage = (message, reply) => {
     const messages = getMessages();
     let answered = false;
 
+    if (!content.length) {
+      return;
+    }
+
     content.split(/\s/gm).map((a) => a.toLowerCase()).forEach((word) => {
       Object.entries(messages).forEach(([name, value]) => {
         if (answered) {
