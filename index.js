@@ -20,10 +20,10 @@ const listMessages = (args, reply) => {
   let string = '';
 
   const generatePage = ([name, words]) => {
-    let currentKey = `${ name }:\n`;
+    let currentKey = `${name}:\n`;
 
     words.forEach((word, index) => {
-      currentKey += `  [${ index + 1 }] - ${ word.split(' ').map((a) => a.match(/https:\/\//) ? `<${ a }>` : a).join(' ') }\n`;
+      currentKey += `  [${index + 1}] - ${word.split(' ').map((a) => a.match(/https:\/\//) ? `<${a}>` : a).join(' ')}\n`;
     });
 
     currentKey += '\n';
@@ -70,26 +70,57 @@ const ping = (_, reply, ___, message) => {
  * @param {Function} reply
  * @param {Array<mixed>} attachments
  */
-const addMessage = (args, reply, attachments) => {
-  if (!args[1] && !attachments.length) {
+const addMessage = (args, reply, attachments, { referencedMessage }) => {
+  if (!args[1] && !attachments.length && !referencedMessage && !referencedMessage.attachment.length) {
     reply('Jimmi braucht ganze Befehle')
     return;
   }
 
   const word = args.shift().toLocaleLowerCase();
   const messages = getMessages();
+  let message = args.join(' ');
+
+  if (referencedMessage) {
+    if (referencedMessage.attachments.length) {
+      attachments = referencedMessage.attachments;
+    } else {
+      message = referencedMessage.content;
+    }
+  }
 
   if (!messages[word]) {
     messages[word] = [];
   }
 
-
   if (!attachments.length) {
-    messages[word].push(args.join(' '));
+    if (messages[word].includes(message)) {
+      reply('Jimmi hat die Nachricht bereits.');
+      
+      return;
+    }
+
+    messages[word].push(message);
   } else {
+    let addCount = 0;
+
     attachments.forEach((attachment) => {
+      if (messages[word].includes(attachment.url)) {
+        return;
+      }
+
+      addCount += 1;
       messages[word].push(attachment.url);
     });
+
+    if (addCount === 0) {
+      if (attachments.length - 1) {
+        reply(`Jimmi hat die ${attachments.length} Bilder bereits.`);
+      } else {
+        reply('Jimmi hat das Bild bereits.');
+      }
+
+      return;
+    }
   }
 
   fs.writeFileSync('data.json', JSON.stringify(messages, null, 2));
@@ -205,7 +236,7 @@ discord.onmessage = (message, reply) => {
           return;
         }
 
-        if (name.match(word)) {
+        if (name.includes(word)) {
           let number;
           let tries = 0;
 
