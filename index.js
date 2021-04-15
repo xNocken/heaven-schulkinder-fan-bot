@@ -70,9 +70,11 @@ const ping = (_, reply, ___, message) => {
  * @param {Function} reply
  * @param {Array<mixed>} attachments
  */
-const addMessage = (args, reply, attachments, { referencedMessage }) => {
-  if (!args[1] && !attachments.length && !referencedMessage && !referencedMessage.attachment.length) {
-    reply('Jimmi braucht ganze Befehle')
+const addMessage = (args, reply, attachments, mess) => {
+  const { referencedMessage } = mess;
+
+  if ((!args[1] && (!attachments || !attachments.length)) && (!referencedMessage || !referencedMessage.attachments.length)) {
+    reply('Jimmi braucht ganze Befehle');
     return;
   }
 
@@ -95,7 +97,7 @@ const addMessage = (args, reply, attachments, { referencedMessage }) => {
   if (!attachments.length) {
     if (messages[word].includes(message)) {
       reply('Jimmi hat die Nachricht bereits.');
-      
+
       return;
     }
 
@@ -193,12 +195,69 @@ const deleteMessage = (args, reply) => {
   reply('Das war Jimmy schon die ganze Zeit ein Dorn im Auge.');
 };
 
+const blacklist = (args, reply, _, message) => {
+  let blacklist = [];
+
+  if (fs.existsSync('blacklist.json')) {
+    blacklist = JSON.parse(fs.readFileSync('blacklist.json'));
+  }
+
+  if (!args[0]) {
+    reply('Jimmi braucht ganze Befehle.');
+    return;
+  }
+
+  const targetId = args[1] || message.getChannel().id;
+  const type = args.shift();
+
+  switch (type) {
+    case 'add':
+      if (blacklist.includes(targetId)) {
+        reply('Jimmi hat diesen Chat bereits aus seiner Route rausgestrichen.');
+        return;
+      }
+
+      reply('Ich werde Jimmi bescheid sagen.');
+      blacklist.push(targetId);
+      break;
+
+    case 'remove':
+      const index = blacklist.findIndex((a) => a === targetId);
+      
+      if (index === -1) {
+        reply('Jimmi hat diesen Chat bereits in seine Route eingeplant.');
+        return;
+      }
+
+      reply('Jimmi wird sich freuen diesen Chat wieder in seine Route aufnehmen zu können.');
+      blacklist.splice(index, 1);
+      break;
+
+    case 'list':
+      if (!blacklist.length) {
+        reply('Jimmi hat keine Chats aus seiner Route rausgestrichen.');
+        return;
+      }
+
+      reply(blacklist.map((a) => `<#${a}>`).join('\n'));
+
+      break;
+
+    default:  
+      reply(`Bist du dir sicher, dass ${type} existiert? Jimmi auf jeden fall nicht!`);
+      break;
+  }
+
+  fs.writeFileSync('blacklist.json', JSON.stringify(blacklist));
+};
+
 const commands = {
   list: listMessages,
   add: addMessage,
   edit: editMessage,
   delete: deleteMessage,
   ping,
+  blacklist,
 };
 
 /**
@@ -225,8 +284,13 @@ discord.onmessage = (message, reply) => {
   } else {
     const messages = getMessages();
     let answered = false;
+    let blacklist = [];
 
-    if (!content.length) {
+    if (fs.existsSync('blacklist.json')) {
+      blacklist = JSON.parse(fs.readFileSync('blacklist.json'));
+    }
+
+    if (!content.length || blacklist.includes(message.getChannel().id)) {
       return;
     }
 
