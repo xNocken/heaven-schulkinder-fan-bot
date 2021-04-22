@@ -52,7 +52,6 @@ const listMessages = (args, reply) => {
   reply(pages[page || 0] || 'Jimmy konnte diese Seite nicht finden.');
 };
 
-
 /**
  * 
  * @param {Array<String>} _ 
@@ -300,7 +299,7 @@ discord.onmessage = (message, reply) => {
           return;
         }
 
-        if (name.includes(word)) {
+        if ((word.length > 3 && name.includes(word)) || (word.length < 4 && word === name)) {
           let number;
           let tries = 0;
 
